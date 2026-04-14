@@ -1,7 +1,3 @@
-Here’s a clean, serious README based on your project. No fluff, just something you can actually put on GitHub.
-
----
-
 # Visual Automata Designer
 
 An interactive web-based tool for designing **Nondeterministic Finite Automata (NFA)** and converting them into **Deterministic Finite Automata (DFA)** using the subset construction algorithm.
