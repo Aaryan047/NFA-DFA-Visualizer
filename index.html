@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark-lab">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Visual Automata Designer</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- PARTICLE BACKGROUND -->
+  <canvas id="particle-canvas"></canvas>
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <span class="topbar-logo">&#9671;</span>
+      <h1 class="topbar-title">Visual Automata Designer</h1>
+      <span class="topbar-sub">NFA &rarr; DFA Converter</span>
+    </div>
+    <div class="topbar-right">
+      <!-- ═══════════════════════════════════════════
+           THEME SELECTOR
+           Options: dark-lab | dark-rose | light-paper | light-mint
+           To add a new theme: add a <option> here and define
+           the CSS variables block in styles.css under
+           "THEME DEFINITIONS" section.
+           ═══════════════════════════════════════════ -->
+      <div class="theme-dropdown-wrap">
+        <select id="theme-select" class="theme-select" title="Choose theme">
+          <option value="dark-lab">Dark Lab</option>
+          <option value="dark-rose">Dark Rose</option>
+          <option value="light-paper">Light Paper</option>
+          <option value="light-mint">Light Mint</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <!-- TAB BAR -->
+  <nav class="tab-bar">
+    <button class="tab-btn active" data-tab="tab-designer">Designer</button>
+    <button class="tab-btn" data-tab="tab-theory">Theory</button>
+  </nav>
+
+  <!-- TAB: DESIGNER -->
+  <div class="tab-panel active" id="tab-designer">
+
+    <!-- MAIN LAYOUT: sidebar | resizer | center | resizer | log -->
+    <div class="layout" id="layout">
+
+      <!-- LEFT SIDEBAR -->
+      <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">ALPHABET</div>
+          <p class="sidebar-hint">Define your symbols. Press Enter or comma to add. ε is always available for transitions.</p>
+          <div id="alphabet-tags" class="alphabet-tags"></div>
+          <div class="alphabet-input-row">
+            <input id="alphabet-input" class="alphabet-input" maxlength="6" placeholder="Add symbol…" />
+            <button id="btn-add-symbol" class="icon-btn" title="Add">+</button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">STATES</div>
+          <button id="btn-add-state" class="sidebar-btn">
+            <span class="btn-icon-left">+</span> Add State
+          </button>
+          <button id="btn-set-start" class="sidebar-btn">
+            <span class="btn-icon-left start-dot"></span> Set Start State
+          </button>
+          <button id="btn-set-final" class="sidebar-btn">
+            <span class="btn-icon-left final-dot"></span> Set Final State
+          </button>
+          <div class="undo-redo-row">
+            <button id="btn-undo" class="sidebar-btn undo-redo-btn" disabled title="Undo (Ctrl+Z)">Undo</button>
+            <button id="btn-redo" class="sidebar-btn undo-redo-btn" disabled title="Redo (Ctrl+Y)">Redo</button>
+          </div>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">TRANSITIONS</div>
+          <p class="sidebar-hint">
+            Double-click a state to start drawing a transition. Then click the target state.
+            Only alphabet symbols are allowed.
+          </p>
+          <button id="btn-cancel-transition" class="sidebar-btn muted" style="display:none;">
+            Cancel Transition
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">CONVERT</div>
+          <button id="btn-convert" class="sidebar-btn accent">
+            Convert to DFA
+          </button>
+          <button id="btn-reset" class="sidebar-btn danger">
+            Reset All
+          </button>
+        </div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">NFA DATA</div>
+          <pre id="nfa-data" class="nfa-data-box">{ }</pre>
+        </div>
+
+      </aside>
+
+      <!-- RESIZER: sidebar ↔ center -->
+      <div class="resizer resizer-col" id="resizer-left" title="Drag to resize"></div>
+
+      <!-- CENTER COLUMN -->
+      <div class="center-col" id="center-col">
+
+        <!-- NFA CANVAS -->
+        <div class="canvas-wrapper" id="nfa-pane">
+          <div class="canvas-header">
+            <span class="pane-title">NFA</span>
+            <span id="canvas-mode-label" class="mode-label">MODE: IDLE</span>
+            <span id="canvas-info" class="canvas-info"></span>
+          </div>
+          <div id="canvas" class="canvas">
+            <svg id="svg-layer" class="svg-layer"></svg>
+          </div>
+        </div>
+
+        <!-- RESIZER: NFA ↔ DFA pane (shown after conversion) -->
+        <div class="resizer resizer-row" id="resizer-mid" style="display:none;"></div>
+
+        <!-- DFA CANVAS (hidden until conversion) -->
+        <div class="canvas-wrapper" id="dfa-pane" style="display:none;">
+          <div class="canvas-header">
+            <span class="pane-title dfa-pane-title">DFA</span>
+            <span class="canvas-info" id="dfa-pane-info"></span>
+          </div>
+          <div id="dfa-canvas" class="canvas">
+            <svg id="dfa-svg-layer" class="svg-layer"></svg>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- RESIZER: center ↔ log -->
+      <div class="resizer resizer-col" id="resizer-right" title="Drag to resize"></div>
+
+      <!-- RIGHT LOG PANEL -->
+      <aside class="log-panel" id="log-panel">
+        <div class="sidebar-label">STEP LOG</div>
+        <div id="log-container" class="log-container">
+          <div class="log-placeholder">Conversion steps will appear here.</div>
+        </div>
+        <div class="sidebar-label" style="margin-top:12px;">DFA TABLE</div>
+        <div id="dfa-table-container" class="dfa-table-container">
+          <div class="log-placeholder">DFA transition table will appear here.</div>
+        </div>
+      </aside>
+
+    </div>
+  </div><!-- #tab-designer -->
+
+  <!-- TAB: THEORY -->
+  <div class="tab-panel theory-panel" id="tab-theory">
+    <div class="theory-inner">
+
+      <h1>Automata Theory</h1>
+      <p class="theory-intro">A self-contained reference covering regular languages, finite automata, and the subset construction algorithm. Start here if you are new to the subject, or use it as a refresher alongside the designer.</p>
+
+      <!-- ── 1. Regular Languages ───────────────────────────── -->
+      <div class="theory-section">
+        <h2>1. Regular Languages</h2>
+
+        <p>A <strong>language</strong> is simply a set of strings over some alphabet &Sigma;. We say a language is <em>regular</em> if it can be recognised by a finite automaton — equivalently, if it can be described by a regular expression, or generated by a right-linear grammar. All three descriptions capture exactly the same class of languages (Kleene's theorem).</p>
+
+        <div class="theory-def">
+          <div class="def-label">Definition — Regular Language</div>
+          <p>A language <code>L &sube; &Sigma;*</code> is <strong>regular</strong> if and only if there exists a deterministic finite automaton (DFA) <code>M</code> such that <code>L(M) = L</code>.</p>
+        </div>
+
+        <h3>Closure properties</h3>
+        <p>The class of regular languages is closed under union, concatenation, Kleene star, complement, intersection, and reversal. This means that combining regular languages with these operations always produces another regular language — a fact that makes them very tractable.</p>
+
+        <h3>Limits</h3>
+        <p>Not every language is regular. The classic non-example is <code>{ a^n b^n | n &ge; 0 }</code> — strings of equal numbers of a's and b's. The <em>pumping lemma</em> provides the standard tool for proving a language falls outside this class: it states that every sufficiently long string in a regular language has a "pumpable" middle section.</p>
+      </div>
+
+      <hr class="theory-divider" />
+
+      <!-- ── 2. Regular Expressions ─────────────────────────── -->
+      <div class="theory-section">
+        <h2>2. Regular Expressions</h2>
+
+        <p>A regular expression (regex) is a compact notation for describing a regular language using three primitive operations and parentheses for grouping.</p>
+
+        <div class="theory-def">
+          <div class="def-label">The three primitive operations</div>
+          <p>
+            <strong>Concatenation</strong> — <code>ab</code> matches the string "ab".<br>
+            <strong>Union (alternation)</strong> — <code>a|b</code> matches "a" or "b".<br>
+            <strong>Kleene star</strong> — <code>a*</code> matches the empty string, "a", "aa", "aaa", &hellip;
+          </p>
+        </div>
+
+        <h3>Base cases</h3>
+        <ul>
+          <li>The empty language <code>&empty;</code> is a regular expression.</li>
+          <li>The empty string <code>&epsilon;</code> is a regular expression.</li>
+          <li>Each symbol <code>a &in; &Sigma;</code> is a regular expression.</li>
+        </ul>
+
+        <h3>Inductive cases</h3>
+        <p>If <code>R</code> and <code>S</code> are regular expressions, then so are <code>(R|S)</code>, <code>(RS)</code>, and <code>(R*)</code>. Precedence (high to low): star, then concatenation, then union — so <code>ab*|c</code> parses as <code>(a(b*))|c</code>.</p>
+
+        <h3>Examples</h3>
+        <ul>
+          <li><code>(0|1)*</code> — all binary strings, including the empty string.</li>
+          <li><code>(0|1)*1(0|1)*</code> — binary strings containing at least one 1.</li>
+          <li><code>a*ba*ba*</code> — strings over {a, b} with exactly two b's.</li>
+          <li><code>(ab)*</code> — even-length strings alternating a and b.</li>
+        </ul>
+      </div>
+
+      <hr class="theory-divider" />
+
+      <!-- ── 3. Nondeterministic Finite Automata (NFA) ───────── -->
+      <div class="theory-section">
+        <h2>3. Nondeterministic Finite Automata (NFA)</h2>
+
+        <p>An NFA is a theoretical machine with a finite set of states that reads an input string one symbol at a time and transitions between states. Unlike a DFA, it may have <em>multiple possible transitions</em> for the same symbol from a given state, <em>no transition at all</em> for some symbol, or spontaneous <em>&epsilon;-transitions</em> that consume no input.</p>
+
+        <div class="theory-def">
+          <div class="def-label">Formal definition</div>
+          <p>An NFA is a 5-tuple <code>M = (Q, &Sigma;, &delta;, q&#x2080;, F)</code> where:</p>
+        </div>
+
+        <div class="theory-tuple">
+          Q &nbsp;&nbsp; — finite set of states<br>
+          &Sigma; &nbsp;&nbsp; — finite input alphabet<br>
+          &delta; : Q &times; (&Sigma; &cup; {&epsilon;}) &rarr; 2^Q &nbsp;&nbsp; — transition function (returns a <em>set</em> of states)<br>
+          q&#x2080; &in; Q &nbsp;&nbsp; — start state<br>
+          F &sube; Q &nbsp;&nbsp; — set of accepting (final) states
+        </div>
+
+        <h3>Acceptance</h3>
+        <p>An NFA <em>accepts</em> a string <code>w</code> if there <em>exists</em> at least one sequence of transitions — including &epsilon;-moves — that leads from <code>q&#x2080;</code> to some state in <code>F</code> after reading all of <code>w</code>. It rejects <code>w</code> if no such sequence exists.</p>
+
+        <h3>The epsilon-closure</h3>
+        <p>The <strong>&epsilon;-closure</strong> of a set of states <code>S</code>, written <code>&epsilon;-closure(S)</code>, is the set of all states reachable from any state in <code>S</code> via zero or more &epsilon;-transitions. It is computed with a simple graph reachability search (BFS or DFS) following only &epsilon;-labelled edges.</p>
+
+        <h3>Why NFAs?</h3>
+        <p>NFAs are often much easier to construct from a regular expression — the Thompson construction converts any regex to an NFA in linear time. They are a convenient intermediate representation, even though execution requires simulation of all possible paths in parallel.</p>
+      </div>
+
+      <hr class="theory-divider" />
+
+      <!-- ── 4. Deterministic Finite Automata (DFA) ─────────── -->
+      <div class="theory-section">
+        <h2>4. Deterministic Finite Automata (DFA)</h2>
+
+        <p>A DFA is the simplest model of computation that recognises exactly the regular languages. At every step, given the current state and the current input symbol, there is <em>exactly one</em> next state — hence "deterministic".</p>
+
+        <div class="theory-def">
+          <div class="def-label">Formal definition</div>
+          <p>A DFA is a 5-tuple <code>M = (Q, &Sigma;, &delta;, q&#x2080;, F)</code> where:</p>
+        </div>
+
+        <div class="theory-tuple">
+          Q &nbsp;&nbsp; — finite set of states<br>
+          &Sigma; &nbsp;&nbsp; — finite input alphabet<br>
+          &delta; : Q &times; &Sigma; &rarr; Q &nbsp;&nbsp; — transition function (returns exactly <em>one</em> state)<br>
+          q&#x2080; &in; Q &nbsp;&nbsp; — start state<br>
+          F &sube; Q &nbsp;&nbsp; — set of accepting states
+        </div>
+
+        <h3>Acceptance</h3>
+        <p>A DFA accepts string <code>w = a&#x2081;a&#x2082;...a&#x2099;</code> if the unique path <code>q&#x2080; &rarr; q&#x2081; &rarr; ... &rarr; q&#x2099;</code> defined by repeated application of &delta; ends in a state <code>q&#x2099; &in; F</code>.</p>
+
+        <h3>Completeness</h3>
+        <p>A DFA is called <em>complete</em> (or <em>total</em>) when &delta; is defined for every <code>(state, symbol)</code> pair. When the subset construction creates a DFA from an NFA, any state with no NFA counterpart is mapped to a single <em>dead state</em> (trap state) from which no accepting state is reachable.</p>
+
+        <h3>Minimisation</h3>
+        <p>Every regular language has a unique minimal DFA (up to renaming of states). The <em>table-filling algorithm</em> (Myhill–Nerode) finds equivalent states and merges them, producing the smallest possible DFA for a given language.</p>
+      </div>
+
+      <hr class="theory-divider" />
+
+      <!-- ── 5. NFA to DFA Conversion ───────────────────────── -->
+      <div class="theory-section">
+        <h2>5. Converting an NFA to a DFA</h2>
+
+        <p>The <strong>subset construction</strong> (also called the <em>powerset construction</em>) is the standard algorithm for converting any NFA into an equivalent DFA. The key insight is that the DFA simulates <em>all possible paths</em> of the NFA in parallel: each DFA state represents a <em>set</em> of NFA states the machine could currently be in.</p>
+
+        <h3>Intuition</h3>
+        <p>When an NFA reads a symbol from state <code>q</code>, it may move to several states at once. Instead of choosing one, we track all of them. The resulting "set of states" becomes a single DFA state. After reading the full input, the DFA accepts if any NFA state in the current set is a final state.</p>
+
+        <h3>The algorithm</h3>
+
+        <div class="theory-algo">
+          <div class="theory-algo-title">Subset Construction — Step by Step</div>
+          <ol>
+            <li>Compute the <strong>&epsilon;-closure of the NFA start state</strong>. This becomes the DFA start state, labelled with that set, e.g. <code>{q0, q1}</code>.</li>
+            <li>Add this set to the <strong>worklist</strong> of unprocessed DFA states.</li>
+            <li>Take a DFA state <code>S</code> from the worklist. For each alphabet symbol <code>a &in; &Sigma;</code>:
+              <ul>
+                <li>Compute <code>move(S, a)</code> — the set of NFA states reachable from any state in <code>S</code> via an <code>a</code>-transition.</li>
+                <li>Compute <code>&epsilon;-closure(move(S, a))</code>.</li>
+                <li>If the result is a new (unseen) set, add it to the DFA state set and the worklist.</li>
+                <li>Record the DFA transition <code>S &rarr; &epsilon;-closure(move(S, a))</code> on symbol <code>a</code>.</li>
+              </ul>
+            </li>
+            <li>Repeat step 3 until the worklist is empty.</li>
+            <li>Mark a DFA state as <strong>accepting</strong> if its NFA-state set contains at least one NFA final state.</li>
+            <li>Any symbol from a DFA state with no outgoing transition leads to a <strong>dead state</strong> &mdash; a non-accepting state that loops on all symbols.</li>
+          </ol>
+        </div>
+
+        <h3>Complexity</h3>
+        <p>In the worst case, an NFA with <code>n</code> states can produce a DFA with up to <code>2^n</code> states (one for each subset of <code>Q</code>). In practice, most subsets are unreachable and the DFA is far smaller. The exponential blowup is unavoidable in the worst case — there exist families of NFAs for which it is achieved.</p>
+
+        <h3>Worked example</h3>
+        <p>Consider the NFA over <code>&Sigma; = {0, 1}</code> with states <code>{q0, q1, q2}</code>, start <code>q0</code>, final <code>{q2}</code>, and transitions:</p>
+
+        <table class="theory-table">
+          <thead>
+            <tr><th>State</th><th>0</th><th>1</th><th>&epsilon;</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>q0</td><td>q1</td><td>&mdash;</td><td>q2</td></tr>
+            <tr><td>q1</td><td>q1</td><td>q2</td><td>&mdash;</td></tr>
+            <tr><td>q2</td><td>&mdash;</td><td>&mdash;</td><td>&mdash;</td></tr>
+          </tbody>
+        </table>
+
+        <p>This is the demo NFA loaded by default in the Designer tab. Running subset construction:</p>
+
+        <table class="theory-table">
+          <thead>
+            <tr><th>DFA State</th><th>NFA States</th><th>On 0</th><th>On 1</th><th>Accept?</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="t-start">A (start)</td><td>{q0, q2}</td><td>B</td><td>dead</td><td class="t-final">Yes</td></tr>
+            <tr><td>B</td><td>{q1}</td><td>B</td><td>C</td><td>No</td></tr>
+            <tr><td class="t-final">C</td><td>{q2}</td><td>dead</td><td>dead</td><td class="t-final">Yes</td></tr>
+            <tr><td>dead</td><td>{}</td><td>dead</td><td>dead</td><td>No</td></tr>
+          </tbody>
+        </table>
+
+        <p>DFA state A is the &epsilon;-closure of <code>q0</code>, which includes <code>q2</code> via the &epsilon;-transition, making the start state immediately accepting. You can verify this result by clicking <strong>Convert to DFA</strong> in the Designer tab.</p>
+
+        <h3>Equivalence theorem</h3>
+        <div class="theory-def">
+          <div class="def-label">Theorem (Rabin &amp; Scott, 1959)</div>
+          <p>For every NFA <code>N</code> there exists a DFA <code>D</code> such that <code>L(N) = L(D)</code>. Therefore NFAs and DFAs recognise exactly the same class of languages — the regular languages.</p>
+        </div>
+      </div>
+
+      <hr class="theory-divider" />
+
+      <!-- ── 6. Quick Reference ──────────────────────────────── -->
+      <div class="theory-section">
+        <h2>6. Quick Reference</h2>
+
+        <table class="theory-table">
+          <thead>
+            <tr><th>Property</th><th>NFA</th><th>DFA</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Transitions per (state, symbol)</td><td>0, 1, or many</td><td>Exactly 1</td></tr>
+            <tr><td>&epsilon;-transitions</td><td>Allowed</td><td>Not allowed</td></tr>
+            <tr><td>Acceptance criterion</td><td>Exists an accepting path</td><td>Unique path ends in F</td></tr>
+            <tr><td>Expressive power</td><td>Regular languages</td><td>Regular languages</td></tr>
+            <tr><td>State count after construction</td><td>n</td><td>Up to 2^n</td></tr>
+            <tr><td>Simulation complexity</td><td>O(n &middot; |w|)</td><td>O(|w|)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div><!-- .theory-inner -->
+  </div><!-- #tab-theory -->
+
+  <script src="script.js"></script>
+</body>
+</html>

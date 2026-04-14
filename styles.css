@@ -1,0 +1,872 @@
+/* ╔══════════════════════════════════════════════════════════╗
+   ║         VISUAL AUTOMATA DESIGNER — styles.css            ║
+   ╠══════════════════════════════════════════════════════════╣
+   ║  CUSTOMISATION GUIDE:                                    ║
+   ║  1. FONTS        → search "§ FONTS"                      ║
+   ║  2. THEME COLORS → search "§ THEME DEFINITIONS"         ║
+   ║     Four themes: dark-lab, dark-rose, light-paper,       ║
+   ║                  light-mint                              ║
+   ║  3. LAYOUT SIZES → search "§ LAYOUT"                     ║
+   ║  4. NODE SIZES   → search "§ STATE NODES"                ║
+   ╚══════════════════════════════════════════════════════════╝ */
+
+
+/* ════════════════════════════════════════════════════════════
+   § FONTS
+   Change the @import URL and the font-family variables below
+   to swap fonts across the entire app.
+   ════════════════════════════════════════════════════════════ */
+/* No external font imports needed — using system fonts */
+
+/* Import from Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=EB+Garamond:wght@400;500;600&display=swap');
+
+:root {
+  /* ── Primary font: clean sans-serif (Helvetica alternative) ── */
+  --font-mono: 'Inter', 'Roboto', Arial, sans-serif;
+
+  /* ── Display font: Garamond style ── */
+  --font-display: 'EB Garamond', Georgia, serif;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § THEME DEFINITIONS
+   Each theme block overrides the CSS variables below.
+   To create a new theme:
+     1. Add a new [data-theme="your-name"] block here
+     2. Add a matching <option> in index.html
+     3. The JS reads data-theme from <html> element
+
+   Variable reference:
+   --bg-base        main page background
+   --bg-surface     card / panel surface
+   --bg-sidebar     left + right panel bg
+   --bg-canvas      automaton drawing area
+   --topbar-bg      top header bar
+   --border         default divider color
+   --border-bright  highlighted divider color
+   --text-primary   primary readable text
+   --text-secondary dimmed label text
+   --text-muted     very dim hint text
+   --accent         primary highlight (start state, buttons)
+   --accent-dim     accent at low opacity (backgrounds)
+   --accent2        secondary highlight (DFA, selection)
+   --accent2-dim    accent2 at low opacity
+   --danger         destructive action color
+   --danger-dim     danger at low opacity
+   --start-color    start-state indicator color
+   --final-color    final-state indicator color
+   --edge-color     automaton edge / arrow color
+   --edge-label-bg  background pill behind edge labels
+   --highlight-color step-animation highlight on nodes
+   --grid-color     canvas dot/grid pattern opacity
+   --resizer-bg     drag-handle background
+   --resizer-hover  drag-handle hover background
+   ════════════════════════════════════════════════════════════ */
+
+/* ── Theme 1: Dark Lab (default) ─────────────────────────── */
+[data-theme="dark-lab"] {
+  --bg-base:         #0d0f14;
+  --bg-surface:      #13161e;
+  --bg-sidebar:      #0f1117;
+  --bg-canvas:       #0a0c10;
+  --topbar-bg:       #07090d;
+  --border:          #1e2230;
+  --border-bright:   #2e3447;
+  --text-primary:    #e8ecf5;
+  --text-secondary:  #6b7590;
+  --text-muted:      #3d4460;
+  --accent:          #4af0c4;
+  --accent-dim:      #1a4d3e;
+  --accent2:         #7b8cff;
+  --accent2-dim:     #1e2455;
+  --danger:          #ff5f6e;
+  --danger-dim:      #3a1520;
+  --start-color:     #4af0c4;
+  --final-color:     #ff5f6e;
+  --edge-color:      #4a5580;
+  --edge-label-bg:   #13161e;
+  --highlight-color: #f0d74a;
+  --grid-color:      rgba(255,255,255,0.025);
+  --resizer-bg:      #111318;
+  --resizer-hover:   #2e3447;
+  --shadow:          0 4px 24px rgba(0,0,0,0.55);
+}
+
+/* ── Theme 2: Dark Rose ──────────────────────────────────── */
+[data-theme="dark-rose"] {
+  --bg-base:         #130e12;
+  --bg-surface:      #1e1520;
+  --bg-sidebar:      #180f1a;
+  --bg-canvas:       #100b11;
+  --topbar-bg:       #0d0810;
+  --border:          #2e1e32;
+  --border-bright:   #4a2d52;
+  --text-primary:    #f0e6f5;
+  --text-secondary:  #8a6a94;
+  --text-muted:      #4a3050;
+  --accent:          #e86cbe;
+  --accent-dim:      #4a1a40;
+  --accent2:         #c09aff;
+  --accent2-dim:     #2d1860;
+  --danger:          #ff6b6b;
+  --danger-dim:      #3d1515;
+  --start-color:     #e86cbe;
+  --final-color:     #ff6b6b;
+  --edge-color:      #6a4080;
+  --edge-label-bg:   #1e1520;
+  --highlight-color: #ffdb6a;
+  --grid-color:      rgba(230,100,190,0.04);
+  --resizer-bg:      #160d18;
+  --resizer-hover:   #4a2d52;
+  --shadow:          0 4px 24px rgba(0,0,0,0.6);
+}
+
+/* ── Theme 3: Light Paper ────────────────────────────────── */
+[data-theme="light-paper"] {
+  --bg-base:         #f5f0e8;
+  --bg-surface:      #fefcf8;
+  --bg-sidebar:      #f0ebe0;
+  --bg-canvas:       #ebe5d8;
+  --topbar-bg:       #2c2416;
+  --border:          #d4c8b0;
+  --border-bright:   #b8a888;
+  --text-primary:    #2c2010;
+  --text-secondary:  #6b5840;
+  --text-muted:      #a8906a;
+  --accent:          #c05a10;
+  --accent-dim:      #f5dcc8;
+  --accent2:         #2060b0;
+  --accent2-dim:     #d0e0f5;
+  --danger:          #c02020;
+  --danger-dim:      #f5d0d0;
+  --start-color:     #c05a10;
+  --final-color:     #c02020;
+  --edge-color:      #806840;
+  --edge-label-bg:   #fefcf8;
+  --highlight-color: #d08010;
+  --grid-color:      rgba(120,80,20,0.06);
+  --resizer-bg:      #ddd4c0;
+  --resizer-hover:   #b8a888;
+  --shadow:          0 4px 24px rgba(0,0,0,0.15);
+}
+
+/* ── Theme 4: Light Mint ─────────────────────────────────── */
+[data-theme="light-mint"] {
+  --bg-base:         #eef6f4;
+  --bg-surface:      #ffffff;
+  --bg-sidebar:      #e6f4f0;
+  --bg-canvas:       #e0f0ec;
+  --topbar-bg:       #1a3a34;
+  --border:          #b8ddd6;
+  --border-bright:   #80c4b8;
+  --text-primary:    #102820;
+  --text-secondary:  #3d6e64;
+  --text-muted:      #80b0a8;
+  --accent:          #00907a;
+  --accent-dim:      #c8ede8;
+  --accent2:         #2050a0;
+  --accent2-dim:     #d0dcf0;
+  --danger:          #c03040;
+  --danger-dim:      #f5d0d4;
+  --start-color:     #00907a;
+  --final-color:     #c03040;
+  --edge-color:      #4a9488;
+  --edge-label-bg:   #ffffff;
+  --highlight-color: #d09010;
+  --grid-color:      rgba(0,140,120,0.06);
+  --resizer-bg:      #c8e8e0;
+  --resizer-hover:   #80c4b8;
+  --shadow:          0 4px 24px rgba(0,0,0,0.12);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § RESET
+   ════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; }
+
+body {
+  font-family: var(--font-mono);    /* ← change --font-mono in § FONTS to restyle all body text */
+  background: var(--bg-base);
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  transition: background 0.25s, color 0.25s;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § TOPBAR
+   ════════════════════════════════════════════════════════════ */
+.topbar {
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 52px;
+  flex-shrink: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 12px; }
+
+.topbar-logo { font-size: 22px; color: var(--accent); line-height: 1; }
+
+/* ── Title font: uses --font-display. Change there to restyle. ── */
+.topbar-title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: 0.02em;
+}
+[data-theme="light-paper"] .topbar-title,
+[data-theme="light-mint"]  .topbar-title { color: #fff; }
+
+.topbar-sub {
+  font-size: 10px;
+  color: rgba(255,255,255,0.45);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 3px;
+}
+.topbar-right { display: flex; align-items: center; gap: 8px; }
+
+/* ── Theme dropdown ── */
+.theme-dropdown-wrap {
+  position: relative;
+}
+.theme-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.18);
+  color: rgba(255,255,255,0.85);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  padding: 6px 28px 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='rgba(255,255,255,0.5)'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+}
+.theme-select:hover { border-color: rgba(255,255,255,0.4); background-color: rgba(255,255,255,0.13); }
+.theme-select option { background: #1a1e2e; color: #fff; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § LAYOUT
+   Change the default panel widths here.
+   Min/max are enforced in the JS resizer functions.
+   ════════════════════════════════════════════════════════════ */
+.layout {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  min-height: 0;
+}
+
+/* ── Resizer handles ── */
+.resizer {
+  flex-shrink: 0;
+  background: var(--resizer-bg);
+  transition: background 0.15s;
+  z-index: 50;
+  position: relative;
+}
+.resizer::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--border-bright);
+  border-radius: 2px;
+}
+.resizer:hover, .resizer.dragging { background: var(--resizer-hover); }
+.resizer-col { width: 5px; cursor: col-resize; border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+.resizer-col::after { width: 1px; height: 24px; }
+.resizer-row { height: 5px; cursor: row-resize; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); width: 100%; }
+.resizer-row::after { width: 24px; height: 1px; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § SIDEBAR (left panel)
+   ════════════════════════════════════════════════════════════ */
+.sidebar {
+  background: var(--bg-sidebar);
+  width: 230px;       /* ← default sidebar width */
+  min-width: 160px;
+  max-width: 420px;
+  flex-shrink: 0;
+  padding: 14px 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-right: 1px solid var(--border);
+}
+.sidebar-section { margin-bottom: 16px; }
+.sidebar-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-hint { font-size: 10px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 8px; }
+
+/* ── Sidebar buttons ── */
+.sidebar-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  cursor: pointer;
+  margin-bottom: 5px;
+  transition: all 0.15s;
+  text-align: left;
+}
+.sidebar-btn:hover       { border-color: var(--accent2); background: var(--accent2-dim); color: var(--accent2); }
+.sidebar-btn.accent      { border-color: var(--accent);  color: var(--accent); }
+.sidebar-btn.accent:hover{ background: var(--accent-dim); }
+.sidebar-btn.danger      { border-color: var(--danger);  color: var(--danger); }
+.sidebar-btn.danger:hover{ background: var(--danger-dim); }
+.sidebar-btn.muted       { border-color: var(--text-muted); color: var(--text-muted); }
+.sidebar-btn.muted:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-dim); }
+.sidebar-btn.active      { background: var(--accent2-dim); border-color: var(--accent2); color: var(--accent2); }
+.sidebar-btn:disabled    { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
+
+.undo-redo-row { display: flex; gap: 5px; margin-bottom: 0; }
+.undo-redo-btn { flex: 1; margin-bottom: 0; justify-content: center; }
+
+.btn-icon-left { font-size: 13px; }
+.start-dot, .final-dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.start-dot { background: var(--start-color); }
+.final-dot { background: var(--final-color); }
+
+
+/* ════════════════════════════════════════════════════════════
+   § ALPHABET EDITOR
+   ════════════════════════════════════════════════════════════ */
+.alphabet-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 8px; min-height: 24px; }
+
+.alpha-tag {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 8px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-bright);
+  border-radius: 20px;
+  font-size: 11px; color: var(--text-primary);
+  font-family: var(--font-mono);
+}
+.alpha-tag.epsilon-tag { border-color: var(--accent); color: var(--accent); }
+.alpha-tag-remove { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 12px; line-height: 1; padding: 0; display: flex; align-items: center; transition: color 0.15s; }
+.alpha-tag-remove:hover { color: var(--danger); }
+
+.alphabet-input-row { display: flex; gap: 5px; }
+.alphabet-input { flex: 1; background: var(--bg-base); border: 1px solid var(--border-bright); border-radius: 6px; color: var(--text-primary); font-family: var(--font-mono); font-size: 11px; padding: 5px 8px; outline: none; transition: border-color 0.2s; min-width: 0; }
+.alphabet-input:focus { border-color: var(--accent); }
+
+.icon-btn { background: transparent; border: 1px solid var(--border-bright); color: var(--text-secondary); border-radius: 6px; width: 28px; height: 28px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; transition: all 0.15s; flex-shrink: 0; }
+.icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+.nfa-data-box { font-size: 9px; color: var(--text-secondary); background: var(--bg-base); border: 1px solid var(--border); border-radius: 6px; padding: 8px; overflow: auto; max-height: 130px; line-height: 1.5; white-space: pre-wrap; word-break: break-all; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § CENTER COLUMN (NFA + DFA panes stacked)
+   ════════════════════════════════════════════════════════════ */
+.center-col { flex: 1; min-width: 200px; display: flex; flex-direction: column; overflow: hidden; }
+
+.canvas-wrapper { display: flex; flex-direction: column; background: var(--bg-canvas); overflow: hidden; position: relative; flex: 1; min-height: 80px; }
+
+.canvas-header { display: flex; align-items: center; gap: 12px; padding: 5px 14px; border-bottom: 1px solid var(--border); background: var(--bg-surface); flex-shrink: 0; }
+.pane-title { font-size: 9px; font-weight: 700; letter-spacing: 0.18em; color: var(--text-muted); text-transform: uppercase; flex-shrink: 0; }
+.dfa-pane-title { color: var(--accent2); }
+.mode-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; color: var(--accent); }
+.canvas-info { font-size: 10px; color: var(--text-secondary); margin-left: auto; }
+
+/* ── Canvas grid background ── */
+.canvas {
+  position: relative; flex: 1; overflow: hidden;
+  background-image:
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(var(--grid-color) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+  background-size: 60px 60px, 60px 60px, 12px 12px, 12px 12px;
+}
+.svg-layer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; overflow: visible; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § STATE NODES
+   Sizes and visual style for NFA state circles.
+   --node-size   : diameter of the circle in px
+   --node-radius : used in JS as R (must be half of node-size)
+   ════════════════════════════════════════════════════════════ */
+.state-node {
+  position: absolute;
+  width: 56px;          /* ← node diameter */
+  height: 56px;
+  border-radius: 50%;
+  background: var(--bg-surface);
+  border: 2px solid var(--border-bright);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 600; color: var(--text-primary);
+  cursor: pointer; user-select: none;
+  z-index: 10;
+  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  transform: translate(-50%, -50%);
+  text-align: center; padding: 4px; word-break: break-all;
+}
+.state-node:hover         { border-color: var(--accent2); box-shadow: 0 0 0 3px var(--accent2-dim); }
+.state-node.selected      { border-color: var(--accent2); box-shadow: 0 0 0 4px var(--accent2-dim), 0 0 16px var(--accent2-dim); background: var(--accent2-dim); }
+.state-node.is-start      { border-color: var(--start-color); box-shadow: 0 0 0 2px var(--accent-dim); }
+.state-node.is-final      { border-color: var(--final-color); outline: 2px solid var(--final-color); outline-offset: 3px; }
+.state-node.is-start.is-final { border-color: var(--start-color); outline: 2px solid var(--final-color); outline-offset: 3px; }
+.state-node.highlighted   { background: color-mix(in srgb, var(--highlight-color) 20%, transparent); border-color: var(--highlight-color); box-shadow: 0 0 0 4px color-mix(in srgb, var(--highlight-color) 15%, transparent); color: var(--highlight-color); }
+
+/* ── DFA diagram nodes ── */
+.dfa-node {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--accent2-dim);
+  border: 2px solid var(--accent2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 9px; font-weight: 600; color: var(--accent2);
+  user-select: none; z-index: 10;
+  transform: translate(-50%, -50%);
+  text-align: center; padding: 4px; word-break: break-all;
+  pointer-events: none;
+  transition: border-color 0.2s;
+}
+.dfa-node.is-start   { border-color: var(--start-color); color: var(--start-color); background: var(--accent-dim); }
+.dfa-node.is-final   { outline: 2px solid var(--final-color); outline-offset: 3px; }
+.dfa-node.is-start.is-final { border-color: var(--start-color); outline: 2px solid var(--final-color); outline-offset: 3px; }
+.dfa-node.dead       { border-color: var(--text-muted); color: var(--text-muted); background: transparent; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § LOG PANEL (right panel)
+   ════════════════════════════════════════════════════════════ */
+.log-panel {
+  background: var(--bg-sidebar);
+  border-left: 1px solid var(--border);
+  width: 280px;         /* ← default log panel width */
+  min-width: 160px; max-width: 500px;
+  flex-shrink: 0;
+  padding: 14px 12px;
+  overflow-y: auto;
+  display: flex; flex-direction: column;
+}
+
+.log-container { display: flex; flex-direction: column; gap: 4px; max-height: 260px; overflow-y: auto; }
+.log-placeholder { font-size: 10px; color: var(--text-muted); font-style: italic; padding: 8px 0; }
+
+.log-step {
+  padding: 7px 10px; border-radius: 5px; font-size: 10px; line-height: 1.6;
+  border-left: 2px solid var(--border-bright);
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  opacity: 0; transform: translateY(4px);
+  animation: stepIn 0.3s ease forwards;
+}
+.log-step.step-highlight  { border-left-color: var(--accent);          color: var(--text-primary); }
+.log-step.step-dfa        { border-left-color: var(--accent2);         color: var(--accent2); }
+.log-step.step-transition { border-left-color: var(--highlight-color); color: var(--highlight-color); }
+.log-step .step-num { font-weight: 700; color: var(--text-muted); margin-right: 4px; }
+
+@keyframes stepIn { to { opacity: 1; transform: translateY(0); } }
+
+
+/* ════════════════════════════════════════════════════════════
+   § DFA TABLE
+   ════════════════════════════════════════════════════════════ */
+.dfa-table-container { overflow-x: auto; flex: 1; margin-top: 4px; }
+.dfa-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+.dfa-table th { background: var(--bg-base); color: var(--text-secondary); padding: 5px 8px; border: 1px solid var(--border); text-align: center; font-weight: 600; letter-spacing: 0.08em; }
+.dfa-table td { padding: 5px 8px; border: 1px solid var(--border); text-align: center; color: var(--text-primary); white-space: nowrap; }
+.dfa-table tr:nth-child(even) td { background: var(--bg-surface); }
+.dfa-table td.is-start  { color: var(--start-color); font-weight: 700; }
+.dfa-table td.is-final  { color: var(--final-color); font-weight: 700; }
+.dfa-table td.dead-state{ color: var(--text-muted); font-style: italic; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § SCROLLBARS
+   ════════════════════════════════════════════════════════════ */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-bright); border-radius: 3px; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § SYMBOL MODAL
+   ════════════════════════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(3px);
+  animation: fadeIn 0.15s ease;
+}
+@keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+.modal-box {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 10px;
+  padding: 24px 28px;
+  min-width: 320px;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.2s ease;
+}
+@keyframes slideUp { from { transform: translateY(12px); opacity:0; } to { transform: translateY(0); opacity:1; } }
+
+/* Modal title uses display font */
+.modal-title   { font-family: var(--font-display); font-size: 15px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+.modal-subtitle{ font-size: 10px; color: var(--text-secondary); margin-bottom: 14px; letter-spacing: 0.04em; }
+
+.modal-input {
+  width: 100%; background: var(--bg-base); border: 1px solid var(--border-bright);
+  border-radius: 6px; color: var(--text-primary); font-family: var(--font-mono);
+  font-size: 15px; padding: 10px 14px; outline: none; margin-bottom: 6px;
+  transition: border-color 0.2s; text-align: center; letter-spacing: 0.1em;
+}
+.modal-input:focus { border-color: var(--accent); }
+
+/* Inline validation error */
+.modal-error {
+  font-size: 10px; color: var(--danger);
+  margin-bottom: 10px; min-height: 14px;
+  transition: opacity 0.2s;
+}
+
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; }
+.modal-btn { padding: 8px 18px; border-radius: 6px; font-family: var(--font-mono); font-size: 11px; font-weight: 600; cursor: pointer; border: 1px solid var(--border-bright); background: transparent; color: var(--text-secondary); transition: all 0.15s; }
+.modal-btn:hover { border-color: var(--text-secondary); color: var(--text-primary); }
+.modal-btn.confirm { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.modal-btn.confirm:hover { background: var(--accent); color: var(--bg-base); }
+
+.symbol-chips { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.symbol-chip {
+  padding: 4px 10px;
+  background: var(--bg-base);
+  border: 1px solid var(--border-bright);
+  border-radius: 20px;
+  font-size: 11px; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.15s;
+  font-family: var(--font-mono);
+}
+.symbol-chip:hover      { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.symbol-chip.active     { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+.symbol-chip.epsilon-chip { color: var(--accent); border-color: var(--accent); }
+
+
+/* ════════════════════════════════════════════════════════════
+   § MISC
+   ════════════════════════════════════════════════════════════ */
+body.resizing     { user-select: none; cursor: col-resize; }
+body.resizing-row { user-select: none; cursor: row-resize; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § PARTICLE CANVAS
+   Fixed behind all content. The JS draws onto this.
+   ════════════════════════════════════════════════════════════ */
+#particle-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Ensure all content sits above the particle canvas */
+header.topbar,
+.tab-bar,
+.layout,
+.tab-panel {
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § TAB BAR
+   ════════════════════════════════════════════════════════════ */
+.tab-bar {
+  display: flex;
+  align-items: stretch;
+  background: var(--topbar-bg);
+  border-bottom: 1px solid var(--border);
+  height: 36px;
+  flex-shrink: 0;
+}
+
+.tab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  padding: 0 22px;
+  cursor: pointer;
+  transition: color 0.18s, border-color 0.18s;
+  outline: none;
+  position: relative;
+  top: 1px; /* optically align with border-bottom */
+}
+.tab-btn:hover { color: var(--text-primary); }
+.tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+
+/* ════════════════════════════════════════════════════════════
+   § TAB PANELS
+   ════════════════════════════════════════════════════════════ */
+.tab-panel { display: none; flex: 1; min-height: 0; overflow: hidden; }
+.tab-panel.active { display: flex; flex-direction: column; }
+
+/* The designer panel wraps the existing .layout */
+#tab-designer { flex-direction: column; }
+#tab-designer .layout { flex: 1; min-height: 0; }
+
+
+/* ════════════════════════════════════════════════════════════
+   § THEORY PANEL
+   ════════════════════════════════════════════════════════════ */
+.theory-panel {
+  overflow-y: auto;
+  background: var(--bg-base);
+  flex-direction: column;
+}
+
+.theory-inner {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 52px 40px 80px;
+}
+
+/* Chapter headings — Apple Garamond */
+.theory-inner h1 {
+  font-family: var(--font-display);
+  font-size: 34px;
+  font-weight: 400;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.theory-inner .theory-intro {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 52px;
+  line-height: 1.7;
+  max-width: 600px;
+}
+
+.theory-section {
+  margin-bottom: 52px;
+}
+
+.theory-section h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 400;
+  color: var(--accent);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+  letter-spacing: -0.01em;
+}
+
+.theory-section h3 {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 24px 0 10px;
+  letter-spacing: 0;
+}
+
+.theory-section p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.theory-section ul,
+.theory-section ol {
+  margin: 0 0 14px 22px;
+}
+
+.theory-section li {
+  font-size: 13px;
+  line-height: 1.8;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+/* Inline code / math notation */
+.theory-section code {
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  padding: 1px 5px;
+  color: var(--accent2);
+}
+
+/* Definition block */
+.theory-def {
+  background: var(--bg-surface);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 6px 6px 0;
+  padding: 14px 18px;
+  margin: 16px 0;
+}
+.theory-def .def-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+.theory-def p {
+  margin-bottom: 0;
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+/* Formal tuple definition */
+.theory-tuple {
+  background: var(--bg-base);
+  border: 1px solid var(--border-bright);
+  border-radius: 6px;
+  padding: 12px 18px;
+  margin: 14px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  color: var(--text-primary);
+  line-height: 2;
+}
+
+/* Step-by-step algorithm box */
+.theory-algo {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-bright);
+  border-radius: 8px;
+  padding: 20px 22px;
+  margin: 16px 0;
+  counter-reset: algo-step;
+}
+.theory-algo-title {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 14px;
+}
+.theory-algo ol {
+  margin: 0;
+  padding-left: 0;
+  list-style: none;
+  counter-reset: algo-step;
+}
+.theory-algo li {
+  counter-increment: algo-step;
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 10px;
+  font-size: 13px;
+  color: var(--text-primary);
+  line-height: 1.65;
+}
+.theory-algo li::before {
+  content: counter(algo-step);
+  position: absolute;
+  left: 0;
+  top: 2px;
+  width: 18px;
+  height: 18px;
+  background: var(--accent-dim);
+  border: 1px solid var(--accent);
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+}
+
+/* Worked example table */
+.theory-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin: 14px 0;
+  font-family: 'Courier New', monospace;
+}
+.theory-table th {
+  background: var(--bg-base);
+  color: var(--text-secondary);
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  font-family: var(--font-mono);
+}
+.theory-table td {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-primary);
+}
+.theory-table tr:nth-child(even) td { background: var(--bg-surface); }
+.theory-table td.t-start { color: var(--start-color); font-weight: 700; }
+.theory-table td.t-final { color: var(--final-color); font-weight: 700; }
+
+/* Divider between major topic groups */
+.theory-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 48px 0;
+}
