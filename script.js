@@ -49,7 +49,7 @@ const LOOP = {
 // ════════════════════════════════════════════════════════════
 // § ALPHABET  — default symbols shown on first load
 // ════════════════════════════════════════════════════════════
-let userAlphabet = ["a", "b"];
+let userAlphabet = ["0", "1"];
 
 // ─────────────────────────────────────────────
 //  ALPHABET EDITOR (sidebar)
